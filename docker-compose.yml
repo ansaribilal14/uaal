@@ -1,0 +1,17 @@
+# Local compose with an optional sidecar layout (spec §59).
+# The UAAL container serves the HTTP API; state/artifacts persist on volumes.
+services:
+  uaal:
+    build: .
+    ports:
+      - "7800:7800"
+    environment:
+      UAAL_HTTP_PORT: "7800"
+      # UAAL_API_KEY: change-me
+      # UAAL_LOG_LEVEL: info
+    volumes:
+      - uaal-data:/data
+    restart: unless-stopped
+
+volumes:
+  uaal-data:

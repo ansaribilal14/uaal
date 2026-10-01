@@ -1,0 +1,45 @@
+{
+  "name": "uaal",
+  "version": "1.0.0",
+  "description": "Universal Agent Access Layer — a platform-agnostic access, extraction, reconstruction, verification and acquisition layer for AI agents.",
+  "type": "module",
+  "license": "MIT",
+  "author": "ansaribilal14",
+  "repository": { "type": "git", "url": "git+https://github.com/ansaribilal14/uaal.git" },
+  "keywords": ["agent", "mcp", "acquisition", "extraction", "verification", "youtube", "twitter", "cli", "tools"],
+  "engines": { "node": ">=20.10.0" },
+  "bin": {
+    "uaal": "./bin/uaal.js",
+    "uaal-worker": "./bin/uaal-worker.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" },
+    "./schemas": { "types": "./dist/core/schemas.d.ts", "import": "./dist/core/schemas.js" }
+  },
+  "files": ["dist", "bin", "schemas", "docs", "README.md", "LICENSE", "agent.md"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "schema:export": "node --import tsx scripts/export-schemas.ts",
+    "smoke": "node --import tsx scripts/smoke.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "commander": "^13.1.0",
+    "fastify": "^5.3.3",
+    "undici": "^7.10.0",
+    "zod": "^3.24.2",
+    "zod-to-json-schema": "^3.24.5"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.3",
+    "vitest": "^3.1.4"
+  }
+}

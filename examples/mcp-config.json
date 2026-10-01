@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "uaal": {
+      "command": "npx",
+      "args": ["-y", "uaal", "mcp"],
+      "env": {
+        "UAAL_LOG_LEVEL": "warn"
+      }
+    }
+  }
+}

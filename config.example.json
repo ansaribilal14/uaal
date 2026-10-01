@@ -1,0 +1,13 @@
+{
+  "$comment": "Optional programmatic config. Environment variables take precedence (see .env.example). Never commit real credentials.",
+  "stateDir": "./state",
+  "artifactsDir": "./artifacts",
+  "attemptTimeoutMs": 180000,
+  "operationTimeoutMs": 300000,
+  "maxDownloadBytes": 2147483648,
+  "logLevel": "info",
+  "learning": true,
+  "cache": true,
+  "politenessMs": 400,
+  "executionProviders": ["local"]
+}

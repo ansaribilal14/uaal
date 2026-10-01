@@ -1,0 +1,1240 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "UAAL Schemas",
+  "schemaVersion": "1.0",
+  "definitions": {
+    "Envelope": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "ok",
+            "partial",
+            "empty",
+            "failed",
+            "unsupported",
+            "requires_auth",
+            "blocked"
+          ]
+        },
+        "operation": {
+          "type": "string"
+        },
+        "request": {
+          "type": "object",
+          "properties": {
+            "resource": {
+              "type": "string"
+            },
+            "capability": {
+              "type": "string",
+              "enum": [
+                "resolve",
+                "inspect",
+                "metadata",
+                "extract",
+                "reconstruct",
+                "media",
+                "acquire",
+                "thread",
+                "comments",
+                "author",
+                "media_metadata",
+                "artifact",
+                "verify"
+              ]
+            },
+            "platform": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "resource",
+            "capability"
+          ],
+          "additionalProperties": false
+        },
+        "identity": {
+          "type": "object",
+          "properties": {
+            "platform": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            },
+            "id": {
+              "type": "string"
+            },
+            "canonicalUrl": {
+              "type": "string"
+            },
+            "aliases": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "relatedIds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "fingerprint": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "platform",
+            "type",
+            "id",
+            "canonicalUrl",
+            "aliases",
+            "fingerprint"
+          ],
+          "additionalProperties": false
+        },
+        "resource": {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "type": "string"
+            },
+            "platform": {
+              "type": "string"
+            },
+            "resource": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "url": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                },
+                "platform": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "url",
+                "type",
+                "platform"
+              ],
+              "additionalProperties": false
+            },
+            "content": {
+              "type": "object",
+              "additionalProperties": {}
+            },
+            "author": {
+              "type": "object",
+              "additionalProperties": {}
+            },
+            "media": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "type": "string"
+                  },
+                  "url": {
+                    "type": "string"
+                  },
+                  "mimeType": {
+                    "type": "string"
+                  },
+                  "width": {
+                    "type": "number"
+                  },
+                  "height": {
+                    "type": "number"
+                  },
+                  "durationSec": {
+                    "type": "number"
+                  },
+                  "thumbnailUrl": {
+                    "type": "string"
+                  },
+                  "downloadable": {
+                    "type": "boolean"
+                  },
+                  "unavailableReason": {
+                    "type": "string"
+                  },
+                  "variants": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": {}
+                    }
+                  }
+                },
+                "required": [
+                  "kind"
+                ],
+                "additionalProperties": true
+              }
+            },
+            "relationships": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string"
+                  },
+                  "from": {
+                    "type": "string"
+                  },
+                  "to": {
+                    "type": "string"
+                  },
+                  "position": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "type",
+                  "from",
+                  "to"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "platformData": {
+              "type": "object",
+              "additionalProperties": {}
+            },
+            "evidence": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "source": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string"
+                  },
+                  "retrievedAt": {
+                    "type": "string"
+                  },
+                  "reliability": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "id",
+                  "source",
+                  "type",
+                  "retrievedAt"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "uncertainty": {
+              "type": "object",
+              "properties": {
+                "confidence": {
+                  "type": "number"
+                },
+                "missing": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "notes": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "code": {
+                        "type": "string"
+                      },
+                      "message": {
+                        "type": "string"
+                      },
+                      "severity": {
+                        "type": "string",
+                        "enum": [
+                          "info",
+                          "warn",
+                          "error"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "code",
+                      "message",
+                      "severity"
+                    ],
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "required": [
+                "confidence",
+                "missing",
+                "notes"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "platform",
+            "resource",
+            "content",
+            "media",
+            "relationships",
+            "platformData",
+            "evidence",
+            "uncertainty"
+          ],
+          "additionalProperties": true
+        },
+        "artifacts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "artifactId": {
+                "type": "string"
+              },
+              "resourceId": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              },
+              "path": {
+                "type": "string"
+              },
+              "size": {
+                "type": "number"
+              },
+              "checksum": {
+                "type": "string"
+              },
+              "mimeType": {
+                "type": "string"
+              },
+              "createdAt": {
+                "type": "string"
+              },
+              "verificationStatus": {
+                "type": "string",
+                "enum": [
+                  "verified",
+                  "unverified",
+                  "failed"
+                ]
+              },
+              "sourceRoute": {
+                "type": "string"
+              },
+              "filename": {
+                "type": "string"
+              },
+              "media": {
+                "type": "object",
+                "properties": {
+                  "container": {
+                    "type": "string"
+                  },
+                  "durationSec": {
+                    "type": "number"
+                  },
+                  "videoCodec": {
+                    "type": "string"
+                  },
+                  "audioCodec": {
+                    "type": "string"
+                  },
+                  "width": {
+                    "type": "number"
+                  },
+                  "height": {
+                    "type": "number"
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "artifactId",
+              "resourceId",
+              "type",
+              "path",
+              "size",
+              "checksum",
+              "mimeType",
+              "createdAt",
+              "verificationStatus",
+              "sourceRoute",
+              "filename"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "verification": {
+          "type": "object",
+          "properties": {
+            "verified": {
+              "type": "boolean"
+            },
+            "checks": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "passed": {
+                    "type": "boolean"
+                  },
+                  "detail": {
+                    "type": "string"
+                  },
+                  "artifactId": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name",
+                  "passed"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "summary": {
+              "type": "string"
+            },
+            "durationMs": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "verified",
+            "checks"
+          ],
+          "additionalProperties": false
+        },
+        "route": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "platform": {
+              "type": "string"
+            },
+            "tags": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "id",
+            "platform",
+            "tags"
+          ],
+          "additionalProperties": false
+        },
+        "attempts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "route": {
+                "type": "string"
+              },
+              "startedAt": {
+                "type": "string"
+              },
+              "durationMs": {
+                "type": "number"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "success",
+                  "failure",
+                  "skipped",
+                  "probe"
+                ]
+              },
+              "failureCode": {
+                "type": "string"
+              },
+              "message": {
+                "type": "string"
+              },
+              "bytesDownloaded": {
+                "type": "number"
+              },
+              "verified": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "route",
+              "startedAt",
+              "durationMs",
+              "status"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "discovery": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "platform": {
+                "type": "string"
+              },
+              "capabilities": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "available",
+                  "filtered",
+                  "probe-failed",
+                  "disabled"
+                ]
+              },
+              "confidence": {
+                "type": "number"
+              },
+              "priority": {
+                "type": "number"
+              },
+              "tags": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "accessLevel": {
+                "type": "string",
+                "enum": [
+                  "public",
+                  "authorized"
+                ]
+              },
+              "reasons": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "id",
+              "platform",
+              "capabilities",
+              "status",
+              "confidence",
+              "priority",
+              "tags",
+              "accessLevel"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "error": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "type": "string"
+            },
+            "message": {
+              "type": "string"
+            },
+            "attempts": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "route": {
+                    "type": "string"
+                  },
+                  "startedAt": {
+                    "type": "string"
+                  },
+                  "durationMs": {
+                    "type": "number"
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "success",
+                      "failure",
+                      "skipped",
+                      "probe"
+                    ]
+                  },
+                  "failureCode": {
+                    "type": "string"
+                  },
+                  "message": {
+                    "type": "string"
+                  },
+                  "bytesDownloaded": {
+                    "type": "number"
+                  },
+                  "verified": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "route",
+                  "startedAt",
+                  "durationMs",
+                  "status"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "code",
+            "message",
+            "attempts"
+          ],
+          "additionalProperties": false
+        },
+        "available": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "missing": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "timing": {
+          "type": "object",
+          "properties": {
+            "startedAt": {
+              "type": "string"
+            },
+            "durationMs": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "startedAt",
+            "durationMs"
+          ],
+          "additionalProperties": false
+        },
+        "traceId": {
+          "type": "string"
+        },
+        "requestId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "status",
+        "operation",
+        "request",
+        "attempts",
+        "timing",
+        "traceId"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "NormalizedResource": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "type": "string"
+        },
+        "platform": {
+          "type": "string"
+        },
+        "resource": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "url": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            },
+            "platform": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "url",
+            "type",
+            "platform"
+          ],
+          "additionalProperties": false
+        },
+        "content": {
+          "type": "object",
+          "additionalProperties": {}
+        },
+        "author": {
+          "type": "object",
+          "additionalProperties": {}
+        },
+        "media": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string"
+              },
+              "url": {
+                "type": "string"
+              },
+              "mimeType": {
+                "type": "string"
+              },
+              "width": {
+                "type": "number"
+              },
+              "height": {
+                "type": "number"
+              },
+              "durationSec": {
+                "type": "number"
+              },
+              "thumbnailUrl": {
+                "type": "string"
+              },
+              "downloadable": {
+                "type": "boolean"
+              },
+              "unavailableReason": {
+                "type": "string"
+              },
+              "variants": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            },
+            "required": [
+              "kind"
+            ],
+            "additionalProperties": true
+          }
+        },
+        "relationships": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string"
+              },
+              "from": {
+                "type": "string"
+              },
+              "to": {
+                "type": "string"
+              },
+              "position": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "type",
+              "from",
+              "to"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "platformData": {
+          "type": "object",
+          "additionalProperties": {}
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "source": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              },
+              "retrievedAt": {
+                "type": "string"
+              },
+              "reliability": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "id",
+              "source",
+              "type",
+              "retrievedAt"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "uncertainty": {
+          "type": "object",
+          "properties": {
+            "confidence": {
+              "type": "number"
+            },
+            "missing": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "notes": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "code": {
+                    "type": "string"
+                  },
+                  "message": {
+                    "type": "string"
+                  },
+                  "severity": {
+                    "type": "string",
+                    "enum": [
+                      "info",
+                      "warn",
+                      "error"
+                    ]
+                  }
+                },
+                "required": [
+                  "code",
+                  "message",
+                  "severity"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "confidence",
+            "missing",
+            "notes"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "platform",
+        "resource",
+        "content",
+        "media",
+        "relationships",
+        "platformData",
+        "evidence",
+        "uncertainty"
+      ],
+      "additionalProperties": true,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "Artifact": {
+      "type": "object",
+      "properties": {
+        "artifactId": {
+          "type": "string"
+        },
+        "resourceId": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        },
+        "size": {
+          "type": "number"
+        },
+        "checksum": {
+          "type": "string"
+        },
+        "mimeType": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string"
+        },
+        "verificationStatus": {
+          "type": "string",
+          "enum": [
+            "verified",
+            "unverified",
+            "failed"
+          ]
+        },
+        "sourceRoute": {
+          "type": "string"
+        },
+        "filename": {
+          "type": "string"
+        },
+        "media": {
+          "type": "object",
+          "properties": {
+            "container": {
+              "type": "string"
+            },
+            "durationSec": {
+              "type": "number"
+            },
+            "videoCodec": {
+              "type": "string"
+            },
+            "audioCodec": {
+              "type": "string"
+            },
+            "width": {
+              "type": "number"
+            },
+            "height": {
+              "type": "number"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "artifactId",
+        "resourceId",
+        "type",
+        "path",
+        "size",
+        "checksum",
+        "mimeType",
+        "createdAt",
+        "verificationStatus",
+        "sourceRoute",
+        "filename"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "VerificationResult": {
+      "type": "object",
+      "properties": {
+        "verified": {
+          "type": "boolean"
+        },
+        "checks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "passed": {
+                "type": "boolean"
+              },
+              "detail": {
+                "type": "string"
+              },
+              "artifactId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "name",
+              "passed"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "summary": {
+          "type": "string"
+        },
+        "durationMs": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "verified",
+        "checks"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ResourceIdentity": {
+      "type": "object",
+      "properties": {
+        "platform": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "canonicalUrl": {
+          "type": "string"
+        },
+        "aliases": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "relatedIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "fingerprint": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "platform",
+        "type",
+        "id",
+        "canonicalUrl",
+        "aliases",
+        "fingerprint"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "AttemptRecord": {
+      "type": "object",
+      "properties": {
+        "route": {
+          "type": "string"
+        },
+        "startedAt": {
+          "type": "string"
+        },
+        "durationMs": {
+          "type": "number"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "success",
+            "failure",
+            "skipped",
+            "probe"
+          ]
+        },
+        "failureCode": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "bytesDownloaded": {
+          "type": "number"
+        },
+        "verified": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "route",
+        "startedAt",
+        "durationMs",
+        "status"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "DiscoveredRoute": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "platform": {
+          "type": "string"
+        },
+        "capabilities": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "available",
+            "filtered",
+            "probe-failed",
+            "disabled"
+          ]
+        },
+        "confidence": {
+          "type": "number"
+        },
+        "priority": {
+          "type": "number"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "accessLevel": {
+          "type": "string",
+          "enum": [
+            "public",
+            "authorized"
+          ]
+        },
+        "reasons": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "platform",
+        "capabilities",
+        "status",
+        "confidence",
+        "priority",
+        "tags",
+        "accessLevel"
+      ],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  "capabilities": [
+    {
+      "name": "resolve",
+      "description": "Canonical resource identity (URL canonicalization, platform detection).",
+      "engineLevel": true
+    },
+    {
+      "name": "inspect",
+      "description": "Lightweight availability report without heavy acquisition.",
+      "engineLevel": true
+    },
+    {
+      "name": "metadata",
+      "description": "Descriptive metadata for the resource.",
+      "engineLevel": false
+    },
+    {
+      "name": "extract",
+      "description": "Raw platform extraction with platformData populated.",
+      "engineLevel": false
+    },
+    {
+      "name": "reconstruct",
+      "description": "Structural reconstruction (thread chains, relationships).",
+      "engineLevel": false
+    },
+    {
+      "name": "media",
+      "description": "Media inventory with URLs/variants, no downloads.",
+      "engineLevel": false
+    },
+    {
+      "name": "acquire",
+      "description": "Produce verified downloadable artifacts.",
+      "engineLevel": false
+    },
+    {
+      "name": "thread",
+      "description": "Ordered post chain for threaded resources.",
+      "engineLevel": false
+    },
+    {
+      "name": "comments",
+      "description": "Comment tree for the resource.",
+      "engineLevel": false
+    },
+    {
+      "name": "author",
+      "description": "Author profile information.",
+      "engineLevel": false
+    },
+    {
+      "name": "media_metadata",
+      "description": "Per-media technical details.",
+      "engineLevel": false
+    },
+    {
+      "name": "artifact",
+      "description": "Explicit artifact production with delivery metadata.",
+      "engineLevel": false
+    },
+    {
+      "name": "verify",
+      "description": "Verify an existing artifact or result (engine-level).",
+      "engineLevel": true
+    }
+  ]
+}

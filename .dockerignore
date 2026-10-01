@@ -1,0 +1,9 @@
+dist
+node_modules
+coverage
+state
+artifacts
+cache
+*.log
+.env
+tests

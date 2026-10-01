@@ -1,0 +1,12 @@
+node_modules/
+dist/
+coverage/
+*.log
+.DS_Store
+
+# UAAL runtime state — never commit per-environment state
+state/
+artifacts/
+cache/
+.env
+config.json
