@@ -51,6 +51,19 @@ uaal acquire "https://www.youtube.com/watch?v=..."   # requires yt-dlp on PATH
 
 Machine output is always JSON on **stdout**; logs go to **stderr**.
 
+### Platform notes — Termux (Android)
+
+UAAL runs on Termux with Node >= 20.10 (`pkg install nodejs-lts git`). Optional but recommended:
+
+```bash
+pkg install ffmpeg     # enables ffprobe container/stream checks for video artifacts
+```
+
+Notes:
+- `ffmpeg` is optional. Images verify via magic bytes/dimensions without it; video verification degrades honestly (`ffprobe_unavailable`) instead of failing.
+- If npm warns about `allow-scripts` for esbuild (a vitest dev-dependency) and `npm test` later fails with an esbuild binary error, approve and rebuild once: `npm install-scripts approve esbuild && npm rebuild esbuild`. Building the CLI (`npm run build`) and running it never need esbuild.
+- npm audit findings in the dev chain (test runner only) never affect the shipped CLI.
+
 ### As an MCP server (Claude, and any MCP client)
 
 ```bash

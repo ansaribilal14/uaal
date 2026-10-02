@@ -5,9 +5,24 @@
   "type": "module",
   "license": "MIT",
   "author": "ansaribilal14",
-  "repository": { "type": "git", "url": "git+https://github.com/ansaribilal14/uaal.git" },
-  "keywords": ["agent", "mcp", "acquisition", "extraction", "verification", "youtube", "twitter", "cli", "tools"],
-  "engines": { "node": ">=20.10.0" },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ansaribilal14/uaal.git"
+  },
+  "keywords": [
+    "agent",
+    "mcp",
+    "acquisition",
+    "extraction",
+    "verification",
+    "youtube",
+    "twitter",
+    "cli",
+    "tools"
+  ],
+  "engines": {
+    "node": ">=20.10.0"
+  },
   "bin": {
     "uaal": "./bin/uaal.js",
     "uaal-worker": "./bin/uaal-worker.js"
@@ -15,10 +30,24 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
-    ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" },
-    "./schemas": { "types": "./dist/core/schemas.d.ts", "import": "./dist/core/schemas.js" }
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./schemas": {
+      "types": "./dist/core/schemas.d.ts",
+      "import": "./dist/core/schemas.js"
+    }
   },
-  "files": ["dist", "bin", "schemas", "docs", "README.md", "LICENSE", "agent.md"],
+  "files": [
+    "dist",
+    "bin",
+    "schemas",
+    "docs",
+    "README.md",
+    "LICENSE",
+    "agent.md"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
@@ -40,6 +69,6 @@
     "@types/node": "^22.13.0",
     "tsx": "^4.19.0",
     "typescript": "^5.7.3",
-    "vitest": "^3.1.4"
+    "vitest": "^4.1.11"
   }
 }
