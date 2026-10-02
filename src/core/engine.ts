@@ -300,21 +300,32 @@ export class UAAL {
       // 2. Idempotency for artifact operations (spec §32)
       if (ARTIFACT_CAPABILITIES.has(capability)) {
         const iKey = cacheKey(identity, capability, request.output);
-        const cached = await this.artifactIndex.find(iKey);
-        if (cached) {
-          const artifact = this.artifacts.get(cached.artifactId);
-          if (artifact) {
-            trace.add("idempotency.hit", { artifactId: artifact.artifactId });
-            warnings.push(`idempotent reuse of verified artifact ${artifact.artifactId}`);
+        const indexEntries = await this.artifactIndex.find(iKey);
+        if (indexEntries.length > 0) {
+          const found: Artifact[] = [];
+          let missing = 0;
+          for (const entry of indexEntries) {
+            const artifact = this.artifacts.get(entry.artifactId);
+            if (artifact) found.push(artifact);
+            else missing++;
+          }
+          if (found.length > 0) {
+            if (missing > 0) {
+              warnings.push(`${missing} indexed artifact(s) missing from store; returning the remaining ${found.length}`);
+            }
+            trace.add("idempotency.hit", { artifacts: found.map((a) => a.artifactId) });
+            warnings.push(`idempotent reuse of ${found.length} verified artifact(s)`);
             finalEnvelope = this.envelope(operation, request, capability, started, trace, {
               status: "ok",
               identity,
-              artifacts: [artifact],
+              artifacts: found,
               attempts,
               warnings
             });
             return finalEnvelope;
           }
+          // every indexed artifact vanished from the store — re-acquire honestly
+          trace.add("idempotency.miss", { reason: "indexed_artifacts_missing", key: iKey });
         }
       }
 
@@ -529,11 +540,14 @@ export class UAAL {
           continue;
         }
 
-        // idempotency bookkeeping
+        // idempotency bookkeeping (register EVERY verified artifact under the key)
         if (wantArtifacts && artifacts.length > 0) {
           const { cacheKey } = await import("./cache.js");
           const iKey = cacheKey(identity, capability, request.output);
-          await this.artifactIndex.put(iKey, artifacts[0].artifactId, artifacts[0].path);
+          await this.artifactIndex.putMany(
+            iKey,
+            artifacts.map((a) => ({ artifactId: a.artifactId, path: a.path }))
+          );
         }
 
         // full artifact verification pass (artifact capabilities gate on artifact checks, not media_present)

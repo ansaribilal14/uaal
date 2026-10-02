@@ -104,6 +104,34 @@ describe("cache + idempotency (spec §32, §33)", () => {
     const dir = await tmpState();
     const idx = new ArtifactIndex(dir);
     await idx.put("k", "art_1", "/tmp/a.mp4");
-    expect((await idx.find("k"))?.artifactId).toBe("art_1");
+    expect((await idx.find("k"))[0]?.artifactId).toBe("art_1");
+  });
+
+  it("artifact index stores EVERY artifact of a multi-artifact resource (spec §32)", async () => {
+    const dir = await tmpState();
+    const idx = new ArtifactIndex(dir);
+    await idx.putMany("k", [
+      { artifactId: "art_a", path: "/tmp/a.jpg" },
+      { artifactId: "art_b", path: "/tmp/b.jpg" }
+    ]);
+    // put() appends rather than overwriting
+    await idx.put("k", "art_c", "/tmp/c.jpg");
+    const found = await idx.find("k");
+    expect(found.map((e) => e.artifactId).sort()).toEqual(["art_a", "art_b", "art_c"]);
+    // re-putting the same artifact does not duplicate
+    await idx.put("k", "art_a", "/tmp/a.jpg");
+    expect((await idx.find("k")).length).toBe(3);
+  });
+
+  it("artifact index reads legacy single-entry index files", async () => {
+    const dir = await tmpState();
+    const { atomicWriteJson } = await import("../../src/core/security/paths.js");
+    await atomicWriteJson(path.join(dir, "artifact-index.json"), {
+      legacy: { artifactId: "art_old", path: "/tmp/old.jpg", createdAt: new Date().toISOString() }
+    });
+    const idx = new ArtifactIndex(dir);
+    const found = await idx.find("legacy");
+    expect(found.length).toBe(1);
+    expect(found[0]?.artifactId).toBe("art_old");
   });
 });

@@ -78,6 +78,30 @@ function expired(entry: CacheEntry<unknown>, freshness: FreshnessClass): boolean
 }
 
 /** Idempotency registry: verified artifacts by deterministic key (spec §32). */
+export interface ArtifactIndexEntry {
+  artifactId: string;
+  path: string;
+  createdAt: string;
+}
+
+type IndexShape = Record<string, ArtifactIndexEntry[]>;
+
+function normalizeIndex(raw: Record<string, unknown>): IndexShape {
+  const out: IndexShape = {};
+  for (const [k, v] of Object.entries(raw)) {
+    if (Array.isArray(v)) {
+      const list = (v as ArtifactIndexEntry[]).filter(
+        (e) => e && typeof e.artifactId === "string" && typeof e.path === "string"
+      );
+      if (list.length > 0) out[k] = list;
+    } else if (v && typeof v === "object" && typeof (v as ArtifactIndexEntry).artifactId === "string") {
+      // legacy single-entry shape written by UAAL <= 1.0.0
+      out[k] = [v as ArtifactIndexEntry];
+    }
+  }
+  return out;
+}
+
 export class ArtifactIndex {
   private file: string;
 
@@ -85,19 +109,34 @@ export class ArtifactIndex {
     this.file = path.join(stateDir, "artifact-index.json");
   }
 
-  async find(key: string): Promise<{ artifactId: string; path: string } | undefined> {
-    const idx = await readFileJson<Record<string, { artifactId: string; path: string; createdAt: string }>>(this.file, {});
-    return idx[key];
+  /** All artifact entries recorded under `key` (a resource may yield many artifacts). */
+  async find(key: string): Promise<ArtifactIndexEntry[]> {
+    const idx = normalizeIndex(await readFileJson<Record<string, unknown>>(this.file, {}));
+    return idx[key] ?? [];
   }
 
   async put(key: string, artifactId: string, artifactPath: string): Promise<void> {
-    const idx = await readFileJson<Record<string, { artifactId: string; path: string; createdAt: string }>>(this.file, {});
-    idx[key] = { artifactId, path: artifactPath, createdAt: new Date().toISOString() };
-    // bound the index
-    const entries = Object.entries(idx);
-    if (entries.length > 5000) {
-      entries.sort((a, b) => a[1].createdAt.localeCompare(b[1].createdAt));
-      for (const [k] of entries.slice(0, entries.length - 5000)) delete idx[k];
+    return this.putMany(key, [{ artifactId, path: artifactPath }]);
+  }
+
+  async putMany(key: string, entries: Array<{ artifactId: string; path: string }>): Promise<void> {
+    const idx = normalizeIndex(await readFileJson<Record<string, unknown>>(this.file, {}));
+    const existing = idx[key] ?? [];
+    const known = new Set(existing.map((e) => e.artifactId));
+    const merged = [...existing];
+    for (const e of entries) {
+      if (!known.has(e.artifactId)) merged.push({ ...e, createdAt: new Date().toISOString() });
+    }
+    idx[key] = merged;
+    // bound the index (by most-recent entry per key)
+    const keys = Object.keys(idx);
+    if (keys.length > 5000) {
+      keys.sort((a, b) => {
+        const la = idx[a][idx[a].length - 1]?.createdAt ?? "";
+        const lb = idx[b][idx[b].length - 1]?.createdAt ?? "";
+        return la.localeCompare(lb);
+      });
+      for (const k of keys.slice(0, keys.length - 5000)) delete idx[k];
     }
     await atomicWriteJson(this.file, idx);
   }
