@@ -389,10 +389,13 @@ export function xThreadAcquireRoute(http: HttpLayer): AccessRoute {
         id: `ev_${ctx.hash(`${statusId}:thread-manifest`)}`,
         source: id,
         type: "thread.reconstruction",
-        data: { chainLength: output.chain.length, mediaCount: artifacts.length },
+        // Must be the FULL normalized thread resource — adapter.normalize()
+        // consumes this evidence as the operation's NormalizedResource.
+        // Chain/media stats ride on provenance, not data.
+        data: resource,
         retrievedAt: new Date().toISOString(),
         reliability: 0.85,
-        provenance: { walkerSlot: walk.slot }
+        provenance: { walkerSlot: walk.slot, chainLength: output.chain.length, mediaCount: artifacts.length }
       };
       return { ok: true, routeId: id, evidence: [synthetic, ...evidence], artifacts, latencyMs: Date.now() - started };
     }
