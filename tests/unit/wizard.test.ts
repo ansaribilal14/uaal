@@ -23,9 +23,15 @@ describe("wizard: platform preview (local, no network)", () => {
   });
   it("detects Threads and Instagram with honest limited-access hints", () => {
     expect(platformPreview("https://www.threads.net/@zuck/post/xyz").label).toBe("Threads");
-    expect(platformPreview("https://www.threads.net/@zuck/post/xyz").hint).toMatch(/generic web/);
+    expect(platformPreview("https://www.threads.net/@zuck/post/xyz").hint).toMatch(/embed surface/);
     expect(platformPreview("https://www.instagram.com/p/Cabc123/").label).toBe("Instagram");
-    expect(platformPreview("https://www.instagram.com/p/Cabc123/").hint).toMatch(/never bypasses/i);
+    expect(platformPreview("https://www.instagram.com/p/Cabc123/").hint).toMatch(/never bypassed/i);
+  });
+  it("detects TikTok and Douyin (v2 platform expansion)", () => {
+    expect(platformPreview("https://www.tiktok.com/@user/video/730123").label).toBe("TikTok");
+    expect(platformPreview("https://vm.tiktok.com/ZMabc/").label).toBe("TikTok");
+    expect(platformPreview("https://www.douyin.com/video/730123").label).toMatch(/Douyin/);
+    expect(platformPreview("https://v.douyin.com/iabc/").label).toMatch(/Douyin/);
   });
   it("falls back to generic web and garbage handling", () => {
     expect(platformPreview("https://example.com/page").label).toBe("Generic web page");

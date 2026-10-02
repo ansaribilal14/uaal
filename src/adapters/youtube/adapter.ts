@@ -25,13 +25,17 @@ import { youtubeIdentity } from "./identity.js";
 import { youtubeRoutes } from "./routes.js";
 import { verifyNormalizedResource } from "../../core/verify/index.js";
 import type { HttpLayer } from "../../core/http.js";
+import { resolveCobaltUrl } from "./mirror-routes.js";
+import type { UAALConfig } from "../../core/contracts.js";
 
 export class YouTubeAdapter implements PlatformAdapter {
   readonly id = "youtube" as const;
   private http: HttpLayer;
+  private config: UAALConfig;
 
-  constructor(http: HttpLayer) {
+  constructor(http: HttpLayer, config: UAALConfig = {}) {
     this.http = http;
+    this.config = config;
   }
 
   detect(resource: string): DetectionResult {
@@ -57,14 +61,16 @@ export class YouTubeAdapter implements PlatformAdapter {
 
   limitations(): string[] {
     return [
-      "Media acquisition requires the yt-dlp binary on PATH.",
+      "Media acquisition works out of the box via public mirrors (invidious/piped); yt-dlp unlocks higher quality and audio-only when installed.",
       "YouTube aggressively throttles datacenter IPs; sign-in walls are reported as requires_auth, never bypassed.",
-      "Stream URLs from public API surfaces expire quickly; acquire downloads immediately after route selection."
+      "Stream URLs from public API surfaces expire quickly; acquire downloads immediately after route selection.",
+      "The cobalt sidecar route only activates when an operator configures a sidecar URL (adapters.youtube.cobaltUrl or UAAL_COBALT_URL)."
     ];
   }
 
   async discoverRoutes(request: ResourceRequest, ctx: RouteDiscoveryContext): Promise<AccessRoute[]> {
-    return youtubeRoutes(this.http);
+    const cobaltUrl = resolveCobaltUrl(this.config);
+    return youtubeRoutes(this.http, cobaltUrl);
   }
 
   async resolveIdentity(resource: string): Promise<ResourceIdentity> {

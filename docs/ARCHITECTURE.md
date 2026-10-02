@@ -13,7 +13,7 @@ ENGINE FACADE            src/core/engine.ts
         ↓
 CAPABILITY ROUTER        src/core/router.ts
         ↓
-PLATFORM ADAPTERS        src/adapters/{youtube,x,reddit,generic-web}
+PLATFORM ADAPTERS        src/adapters/{youtube,x,tiktok,douyin,instagram,threads,reddit,generic-web}
         ↓
 ACCESS ROUTES            independent methods per platform+capability
         ↓

@@ -40,19 +40,25 @@ export function platformPreview(rawUrl: string): PlatformPreview {
   if (host === "youtu.be" || /(^|\.)youtube\.com$/.test(host) || host === "youtube-nocookie.com") {
     return {
       label: "YouTube",
-      hint: "full video saving needs yt-dlp on PATH (pkg install youtube-dl / pip install yt-dlp); metadata works without it"
+      hint: "saving works out of the box via public mirrors; install yt-dlp for best quality/audio-only (pkg install youtube-dl / pip install yt-dlp)"
     };
   }
   if (/(^|\.)reddit\.com$/.test(host) || host === "redd.it" || host === "v.redd.it") {
     return { label: "Reddit" };
   }
+  if (/(^|\.)tiktok\.com$/.test(host)) {
+    return { label: "TikTok" };
+  }
+  if (/(^|\.)douyin\.com$/.test(host) || /(^|\.)iesdouyin\.com$/.test(host)) {
+    return { label: "Douyin (抖音)" };
+  }
   if (/(^|\.)threads\.(net|com)$/.test(host)) {
-    return { label: "Threads", hint: "served via the generic web route (public page data only — often text + image)" };
+    return { label: "Threads", hint: "public embed surface — post text + images/video when exposed" };
   }
   if (/(^|\.)instagram\.com$/.test(host) || host === "instagr.am") {
     return {
       label: "Instagram",
-      hint: "served via the generic web route — Instagram often hides public pages behind a login; UAAL never bypasses that"
+      hint: "public embed surface only — posts behind a login are reported honestly, never bypassed"
     };
   }
   return { label: "Generic web page" };

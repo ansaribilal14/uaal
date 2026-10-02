@@ -15,6 +15,7 @@ Exit codes: `0` ok/partial · `4` empty · `1` failed/unsupported/requires_auth/
 | `uaal acquire <url>` | Verified artifact production (media, snapshots, manifests) |
 | `uaal verify <artifactId\|path>` | Re-verify an artifact |
 | `uaal routes [url]` | Route registry, learned stats; with a URL also live discovery |
+| `uaal platforms` | Every supported platform: link shapes, capabilities, honest limitations |
 | `uaal capabilities` | Capability registry + per-platform support |
 | `uaal schema` | Export JSON Schemas for all contracts |
 | `uaal health` | Non-destructive system health |
@@ -57,6 +58,12 @@ uaal resolve "https://m.youtube.com/watch?vi=dQw4w9WgXcQ"
 
 # thread reconstruction
 uaal inspect --capability thread "https://x.com/<user>/status/<id>"
+
+# TikTok acquisition (no external tools needed)
+uaal acquire "https://www.tiktok.com/@user/video/<id>"
+
+# short links resolve automatically
+uaal acquire "https://vm.tiktok.com/<code>/"
 
 # acquire audio only, capped at 200 MB, 60s per attempt
 uaal acquire "https://www.youtube.com/watch?v=<id>" --format audio --max-bytes 200000000 --timeout 60000

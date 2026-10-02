@@ -22,6 +22,7 @@ import type {
 import { classifyFailure, FailureCode, type Failure } from "../../core/errors.js";
 import { getJson, HttpFailure, type HttpLayer } from "../../core/http.js";
 import { canonicalWatchUrl } from "./identity.js";
+import { youtubeInvidiousAcquireRoute, youtubePipedAcquireRoute, youtubeCobaltAcquireRoute } from "./mirror-routes.js";
 
 const ROUTE_TIMEOUT = 30_000;
 
@@ -487,8 +488,8 @@ export function youtubePipedRoute(http: HttpLayer): AccessRoute {
   };
 }
 
-export function youtubeRoutes(http: HttpLayer): AccessRoute[] {
-  return [
+export function youtubeRoutes(http: HttpLayer, cobaltUrl?: string): AccessRoute[] {
+  const routes: AccessRoute[] = [
     youtubeProbeRoute(http),
     youtubeOembedRoute(http),
     youtubeInnertubeRoute(http),
@@ -498,4 +499,14 @@ export function youtubeRoutes(http: HttpLayer): AccessRoute[] {
     youtubeYtdlpIosRoute(),
     youtubePipedRoute(http)
   ];
+  // Mirror acquisition routes (ytagent method chain, self-contained):
+  routes.push(youtubeInvidiousAcquireRoute(http));
+  routes.push(youtubePipedAcquireRoute(http));
+  if (cobaltUrl) {
+    routes.push(youtubeCobaltAcquireRoute(http, cobaltUrl));
+  }
+  return routes;
 }
+
+/* Re-exports: mirror routes live in their own module. */
+export { youtubeInvidiousAcquireRoute, youtubePipedAcquireRoute, youtubeCobaltAcquireRoute, resolveCobaltUrl } from "./mirror-routes.js";

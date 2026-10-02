@@ -14,6 +14,10 @@ const ADAPTER_URLS: Record<string, string> = {
   youtube: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
   x: "https://x.com/jack/status/20",
   reddit: "https://www.reddit.com/r/node/comments/1abc123/test/",
+  tiktok: "https://www.tiktok.com/@user/video/7301234567890123456",
+  douyin: "https://www.douyin.com/video/7301234567890123456",
+  instagram: "https://www.instagram.com/p/Cxyz123abc_/",
+  threads: "https://www.threads.net/@user/post/Cxyz123abcA",
   "generic-web": "https://example.com/page"
 };
 
@@ -36,8 +40,17 @@ function discoveryCtx(adapter: PlatformAdapter, url: string) {
 describe("adapter contract (all built-in adapters)", () => {
   const adapters = getBuiltinAdapters({});
 
-  it("registers the four v1 adapters", () => {
-    expect(adapters.map((a) => a.id).sort()).toEqual(["generic-web", "reddit", "x", "youtube"]);
+  it("registers the v2 platform adapters", () => {
+    expect(adapters.map((a) => a.id).sort()).toEqual([
+      "douyin",
+      "generic-web",
+      "instagram",
+      "reddit",
+      "threads",
+      "tiktok",
+      "x",
+      "youtube"
+    ]);
   });
 
   for (const adapter of adapters) {

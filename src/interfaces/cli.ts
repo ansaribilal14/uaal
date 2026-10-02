@@ -201,6 +201,33 @@ export function buildCli(): Command {
     });
 
   program
+    .command("platforms")
+    .description("Show every supported platform, its link shapes and honest limitations")
+    .action(async () => {
+      const engine = await makeEngine({ silent: true });
+      const SAMPLES: Record<string, string[]> = {
+        youtube: ["https://www.youtube.com/watch?v=VIDEO_ID", "https://youtu.be/VIDEO_ID"],
+        x: ["https://x.com/user/status/POST_ID"],
+        tiktok: ["https://www.tiktok.com/@user/video/POST_ID", "https://vm.tiktok.com/CODE/"],
+        douyin: ["https://www.douyin.com/video/POST_ID", "https://v.douyin.com/CODE/"],
+        instagram: ["https://www.instagram.com/p/SHORTCODE/", "https://www.instagram.com/reel/SHORTCODE/"],
+        threads: ["https://www.threads.net/@user/post/POST_ID"],
+        reddit: ["https://www.reddit.com/r/sub/comments/POST_ID/"],
+        "generic-web": ["https://example.com/any/page"]
+      };
+      printEnvelope({
+        schemaVersion: "1.0",
+        platforms: engine.registry.all().map((a) => ({
+          platform: a.id,
+          accepts: SAMPLES[a.id] ?? [],
+          capabilities: a.capabilities().map((c) => c.name),
+          limitations: a.limitations()
+        }))
+      });
+      process.exit(0);
+    });
+
+  program
     .command("schema")
     .description("Export JSON schemas for all response contracts")
     .action(async () => {
