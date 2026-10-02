@@ -130,7 +130,7 @@ export class UAAL {
 
   /** Verify an existing artifact by id or path (engine-level capability). */
   async verifyArtifact(ref: { artifactId?: string; path?: string }, signal?: AbortSignal): Promise<UAALEnvelope> {
-    const trace = new Trace();
+    const trace = new Trace(undefined, this.config.onTrace);
     const started = new Date().toISOString();
     trace.add("verify.begin", ref);
     const ffprobeBin = (this.artifacts as unknown as { ffprobeBin: string | false }).ffprobeBin;
@@ -211,7 +211,7 @@ export class UAAL {
   /** Dry-run (spec §51): discovery + plan without executing any route. */
   async plan(request: ResourceRequest, outerSignal?: AbortSignal): Promise<UAALEnvelope> {
     const started = new Date().toISOString();
-    const trace = new Trace(newTraceId());
+    const trace = new Trace(newTraceId(), this.config.onTrace);
     const capability = request.capability ?? "metadata";
     try {
       const { identity, adapter } = await resolveIdentity(this.registry, request);
@@ -247,7 +247,7 @@ export class UAAL {
   private async run(original: ResourceRequest, request: ResourceRequest, operation: string, outerSignal?: AbortSignal): Promise<UAALEnvelope> {
     const started = new Date().toISOString();
     const startedMs = Date.now();
-    const trace = new Trace(newTraceId());
+    const trace = new Trace(newTraceId(), this.config.onTrace);
     const log = this.logger.withTrace(trace.traceId);
     if (request.requestId) trace.add("request.id", { requestId: request.requestId });
     trace.add("operation", { operation, resource: request.resource.slice(0, 200) });

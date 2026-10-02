@@ -116,13 +116,21 @@ export class Trace {
   readonly traceId: string;
   readonly events: TraceEvent[] = [];
   private startedAt = Date.now();
+  private onEvent?: (e: TraceEvent) => void;
 
-  constructor(traceId: string = newTraceId()) {
+  constructor(traceId: string = newTraceId(), onEvent?: (e: TraceEvent) => void) {
     this.traceId = traceId;
+    this.onEvent = onEvent;
   }
 
   add(event: string, fields?: Record<string, unknown>): void {
-    this.events.push({ at: new Date().toISOString(), event, ...redactValue(fields ?? {}) as Record<string, unknown> });
+    const e: TraceEvent = { at: new Date().toISOString(), event, ...redactValue(fields ?? {}) as Record<string, unknown> };
+    this.events.push(e);
+    try {
+      this.onEvent?.(e);
+    } catch {
+      /* observer errors must never break an operation */
+    }
   }
 
   elapsedMs(): number {

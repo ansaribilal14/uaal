@@ -8,6 +8,8 @@ Exit codes: `0` ok/partial · `4` empty · `1` failed/unsupported/requires_auth/
 
 | Command | Description |
 |---------|-------------|
+| `uaal` (no args) | Interactive grab wizard: link → storage choice → progress → "All set ✅" |
+| `uaal grab [url]` | Same wizard; with a URL it skips the link prompt |
 | `uaal resolve <url>` | Canonical identity (platform, type, id, canonical URL, fingerprint) |
 | `uaal inspect <url>` | Availability + metadata without heavy acquisition |
 | `uaal acquire <url>` | Verified artifact production (media, snapshots, manifests) |
@@ -21,6 +23,18 @@ Exit codes: `0` ok/partial · `4` empty · `1` failed/unsupported/requires_auth/
 | `uaal mcp` | Run the MCP server on stdio |
 | `uaal serve [--port N] [--host H]` | Run the HTTP API server |
 | `uaal --version` | Version |
+
+### Grab wizard details
+
+- Human progress runs on stderr (spinner on TTYs, step lines otherwise); the
+  final summary goes to stdout. No JSON unless something goes unexpectedly wrong.
+- Storage options: default (`./artifacts`), device Downloads (Termux-aware:
+  `~/storage/downloads` → `~/Downloads` → `/sdcard/Download`), current folder,
+  or a custom path (validated writable before running).
+- Exit codes mirror the engine: 0 ok/partial, 2 no input, 4 empty, 1 failed/
+  blocked/auth/unsupported, 130 cancelled.
+- Scripted/non-interactive: `echo "<url>" | uaal` uses default storage; pass a
+  second line (`1`–`4` or a path) to choose storage programmatically.
 
 ## Shared flags (resolve/inspect/acquire)
 

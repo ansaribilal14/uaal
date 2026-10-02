@@ -1,7 +1,7 @@
 {
   "name": "uaal",
   "version": "1.0.0",
-  "description": "Universal Agent Access Layer — a platform-agnostic access, extraction, reconstruction, verification and acquisition layer for AI agents.",
+  "description": "Universal Agent Access Layer \u2014 a platform-agnostic access, extraction, reconstruction, verification and acquisition layer for AI agents.",
   "type": "module",
   "license": "MIT",
   "author": "ansaribilal14",
@@ -50,6 +50,7 @@
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "start": "node bin/uaal.js",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",

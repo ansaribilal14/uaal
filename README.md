@@ -39,6 +39,24 @@ Every operation returns exactly one strict status: `ok | partial | empty | faile
 
 ## Install & quickstart
 
+### One command for humans: `uaal` (grab wizard)
+
+```bash
+uaal            # or: npm start, or: uaal grab
+```
+
+Guided flow — paste a link (X/Twitter, YouTube, Reddit, Threads, Instagram, or
+any web page), pick where to save (default storage / Downloads / this folder /
+custom), press Enter, and watch plain-language progress until **"All set ✅"**
+with the verified file list. Failures are translated to human reasons; the
+fail-closed engine underneath never fakes success. Scripted use works too:
+
+```bash
+echo "https://x.com/user/status/123" | uaal   # non-interactive, default storage
+```
+
+### Machine interface (JSON on stdout, logs on stderr)
+
 ```bash
 npm install -g uaal          # or: npm install uaal (library)
 uaal health                  # environment, adapters, dependencies

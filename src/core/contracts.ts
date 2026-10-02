@@ -7,6 +7,7 @@
  */
 
 import type { Failure, FailureCode } from "./errors.js";
+import type { TraceEvent } from "./observability.js";
 
 /* ------------------------------------------------------------------ */
 /* Capabilities (spec §7)                                              */
@@ -636,6 +637,8 @@ export interface UAALConfig {
   allowLoopbackHttp?: boolean;
   /** Execution providers to enable (default ["local"]). */
   executionProviders?: ExecutionProviderId[];
+  /** Optional live trace observer (per-operation events, redacted). */
+  onTrace?: (event: TraceEvent) => void;
 }
 
 export const DEFAULT_CONFIG: Required<Pick<UAALConfig, "attemptTimeoutMs" | "operationTimeoutMs" | "maxDownloadBytes" | "maxRedirects" | "logLevel" | "learning" | "cache" | "politenessMs">> = {

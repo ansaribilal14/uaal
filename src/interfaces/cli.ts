@@ -17,6 +17,13 @@ function numEnv(name: string): number | undefined {
   return Number.isFinite(n) ? n : undefined;
 }
 
+/** Exit without truncating pending async writes (stdout/stderr may be pipes). */
+async function exitFlushed(code: number): Promise<never> {
+  await new Promise<void>((res) => process.stdout.write("", () => res()));
+  await new Promise<void>((res) => process.stderr.write("", () => res()));
+  process.exit(code);
+}
+
 function configFromEnv(overrides: Partial<UAALConfig> = {}): UAALConfig {
   const cfg: UAALConfig = {
     stateDir: process.env.UAAL_STATE_DIR ?? (process.env.UAAL_HOME ? `${process.env.UAAL_HOME}/state` : undefined),
@@ -117,6 +124,22 @@ async function runOp(engine: UAAL, op: "resolve" | "inspect" | "acquire", url: s
 export function buildCli(): Command {
   const program = new Command();
   program.name("uaal").description("Universal Agent Access Layer — platform-agnostic resource access for AI agents").version("1.0.0");
+
+  // No subcommand → interactive grab wizard (one command, guided flow)
+  program.action(async () => {
+    const { runWizard } = await import("./wizard.js");
+    const result = await runWizard();
+    await exitFlushed(result.exitCode);
+  });
+
+  program
+    .command("grab [url]")
+    .description("Interactive grab: paste a link, choose storage, watch progress (url optional)")
+    .action(async (url: string | undefined) => {
+      const { runWizard } = await import("./wizard.js");
+      const result = await runWizard({ url });
+      await exitFlushed(result.exitCode);
+    });
 
   addCommon(program.command("resolve <url>").description("Resolve canonical resource identity (engine-level)"));
   program.commands[program.commands.length - 1].action(async (url: string, opts: CommonOpts) => {
