@@ -4,9 +4,11 @@ coverage/
 *.log
 .DS_Store
 
-# UAAL runtime state — never commit per-environment state
+# UAAL runtime state — never commit per-environment state.
+# Root-anchored so source trees like src/core/artifacts/ stay tracked.
 state/
-artifacts/
-cache/
+/artifacts/
+/state/
+/cache/
 .env
 config.json
